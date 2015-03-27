@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <script type="text/javascript" src="scripts/jquery-2.1.1.js"></script>
+    <script type="text/javascript" src="scripts/jquery.tmpl.js"></script>
+    <script type="text/javascript" src="scripts/knockout-3.2.0.js"></script>
+    <script type="text/javascript" src="scripts/knockout.mapping-latest.debug.js"> </script>
+</head>
+<body>
+
+
+    <script type="text/ecmascript">
+        function getserverData() {
+            $.ajax({
+                url: 'http://localhost/mvc/person/getServerInfo',
+            dataType: "json",
+            type: "GET",
+            contentType: 'application/x-www-form-urlencoded; charset=utf-8',    //replace /json to the urlenoded
+            async: true,
+            processData: true,                                                  //important to use it as true
+            cache: false,
+            success: function (data) {
+                debugger;
+                //viewModel.serverTime(data.serverTime);
+                // viewModel.numUsers(data.numUsers);
+                viewModel = ko.mapping.fromJS(data);
+               // ko.mapping.fromJS(data, viewModel);
+
+            },
+            error: function (xhr) {
+                alert('error');
+            }
+        });
+        }
+    </script>
+
+    The time on the server is :<span data-bind=" text:serverTime"></span>
+    and <span data-bind="text: numUsers"></span>user(s) are connected
+    <input type="button" onclick="return getserverData();" />    
+    
+    <script type="text/javascript">
+        var viewModel = {
+            serverTime: ko.observable('dddd'),
+            numUsers: ko.observable('23')
+        };
+        ko.applyBindings(viewModel);
+
+    </script>
+</body>
+</html>

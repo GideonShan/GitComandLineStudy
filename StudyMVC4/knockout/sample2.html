@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <script type="text/javascript" src="../scripts/jquery-2.1.1.js"></script>
+    <script type="text/javascript" src="../scripts/jquery.tmpl.js"></script>
+    <script type="text/javascript" src="../scripts/knockout-3.2.0.js"></script>
+</head>
+<body>
+    <div>
+        <h3>What's in the model?</h3>
+        <table>
+            <tr>
+                <td>Text Value:</td>
+                <td data-bind="text:stringValue"></td>
+            </tr>
+            <tr>
+                <td>Password</td>
+                <td data-bind="text: passwordValue"></td>
+            </tr>
+            <tr>
+                <td>Bool value:</td>
+                <td data-bind="text: boolValue"></td>
+            </tr>
+            <tr>
+                <td> selected option:</td>
+                <td data-bind="text:selectedOptionValue"></td>
+            </tr>
+            <tr>
+                <td>Multi-selectd options:</td>
+                <td data-bind="text: mulitipleSelectedOptionValues"></td>
+            </tr>
+            <tr>
+                <td>Radio button selection:</td>
+                <td data-bind="text :radionSelectedOptionValue"></td>
+            </tr>
+        </table>
+    </div>
+    <h3>HTML controls</h3>
+    <table>
+        <tr>
+            <td>
+                Text value(Updates on change):
+            </td>
+            <td>
+                <input data-bind="value:stringValue" />
+            </td>
+        </tr>
+    </table>
+    <script type="text/javascript">
+        var viewModel = {
+            stringValue: ko.observable("Hello"),
+            passwordValue: ko.observable("mypassword"),
+            boolValue: ko.observable(true),
+            optionValues: ko.observableArray(["option1","option2","option3"]),
+            selectedOptionValue: ko.observable("Gamma"),
+            mulitipleSelectedOptionValues: ko.observable(["option2"]),
+            radionSelectedOptionValue:ko.observable("Beta")
+        };
+        ko.applyBindings(viewModel);
+    </script>
+</body>
+</html>

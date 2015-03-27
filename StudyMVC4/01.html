@@ -1,0 +1,184 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <script type="text/javascript" src="scripts/jquery-2.1.1.js"></script>
+    <script type="text/javascript" src="scripts/jquery.tmpl.js"></script>
+    <script type="text/javascript" src="scripts/knockout-3.2.0.js"></script>
+    <script type="text/javascript">
+        function showItem()
+        {
+            var win=window.open("test2.html")
+        }
+    </script>
+</head>
+<body>
+    <input type="text" id="txtId1"  />
+    <input type="text" id="txtName2" />
+    <input  type="button" id="btnShow" value="Show" onclick="showItem()" />
+    <div data-bind="visible:shouldShowMessage">
+        You will see the message only when "shouldShowMessage" holds accesskey true aria-value.
+    </div>
+
+    <div data-bind="html: myMessage, css: { profitWarning: price() < 0 }">
+        
+    </div>
+     <div data-bind="text: myMessage">
+        
+    </div>
+    <div data-bind="visible:myValues().length>0">
+        <table>
+            <thead>For each</thead>
+            <tbody data-bind="foreach: myValues ">
+            <tr><td data-bind="text:$data"></td></tr>            
+            </tbody>
+        </table>
+    </div>
+
+    <div> <span data-bind="text: priceRate"></span> <span data-bind="text:price()>50 ? 'expansive':'affordable'"></span></div>
+
+    <div>
+        <div data-bind="event: { mouseover: enableDetails, mouseout: disableDetails }">
+            mouse over me 
+        </div>
+        <div data-bind="visible: detailsEnabled"> Details </div>
+        <div>tttt</div>
+    </div>
+
+    <div data-bind="event: { mouseover:myFunction }">
+       test1
+       test2
+       test3
+    </div>
+   <button data-bind="click: function () { viewModel.myFunction('param1', 'param2')}">Click me</button>
+   <button id="btnAnornermous" data-bind="event: { click: function () { viewModel.myFunction1('param1', 'param2') } }">Click me, show anonymous function parameter values</button>
+
+    <input type="text" data-bind="value: logName(), valueUpdate: 'afterkeydown'," id="txtLoginName"  />
+    <input type="text" data-bind="value: password(), valueUpdate:'afterkeydown'" id ="txtPwd"/>
+
+    <div> Demo template </div>
+ 
+
+  
+
+    binding  a template 
+   <div data-bind='template: "persontemplate"'></div>
+    pass multiple values  
+    <div data-bind='template: { name:persontemplate, data: $data}'></div>
+
+    <script id='persontemplate' type='text/javascript'>
+        {{if age>33}}
+        ${name} is ${age} years old
+        {{else}}
+        ${name} is MidAge Person and his/her is age is ${age} years old
+        {{/if}}
+         <button data-bind="click: makeolder">Make Older</button>
+    </script>
+
+   <script id='emptytemplate' type='text/javascript'>
+            ${name} is ${age} years old
+    </script>
+
+    For Each
+    <div data-bind='template:{ name:persontemplate, foreach: $data.persons}'></div>
+   <!-- <button data-bind="click: AddNewPerson">Add a new person</button> -->
+
+
+
+    <div data-bind="slideVisible:giftWrap , slideDuration:600"> You have selected the option</div>
+    <label><input type="checkbox" data-bind="checked: giftWrap" /></label>
+
+
+    <script type="text/javascript">
+
+        ko.bindingHandlers.slideVisible = {
+            update: function(element, valueAccessor, allBindingsAccessor) {
+                // First get the latest data that we're bound to
+                var value = valueAccessor(), allBindings = allBindingsAccessor();        
+
+                // Next, whether or not the supplied model property is observable, get its current value
+                var valueUnwrapped = ko.utils.unwrapObservable(value);
+
+                // Grab some more data from another binding property
+                var duration = allBindings.slideDuration || 400;
+
+                // 400ms is default duration unless otherwise specified
+     
+                // Now manipulate the DOM element
+
+                if (valueUnwrapped == true)
+                    $(element).slideDown(duration); // Make the element visible
+                else
+                    $(element).slideUp(duration);   // Make the element invisible
+            }
+        };
+
+         var viewModel = {         
+             shouldShowMessage: ko.observable(false),
+             myValues: ko.observableArray([]),
+             price: ko.observable(27.77),
+             myMessage: ko.observable("<i>Hello, world!</i>"),
+             detailsEnabled: ko.observable(false),
+             giftWrap: ko.observable(true),
+             enableDetails: function ()
+             {
+                 this.detailsEnabled(true);
+             },
+             disableDetails: function ()
+             {
+                 this.detailsEnabled(false);
+             },
+             myFunction: function (event)
+             {                
+                 if (event.shiftKey)
+                 {
+                 }
+                 else
+                 {
+                 }
+             },
+             myFunction1: function () {
+                 $.each(arguments, function (i, e) {
+                     alert(i);
+                     alert(e);
+                 });
+             },
+             logName: ko.observable("Please input email address"),
+             password: ko.observable("******"),
+             clearInputVale: function (obj)
+             {
+                 obj.value="";
+             },
+             name: ko.observable("Gideon"),
+             age: ko.observable("36"),
+             makeolder: function () {
+                 this.age(this.age() + 1);
+             },
+             persons: ko.observableArray([{name:"gideon", age:34,makeolder:"gideon37"}, {name:"Alex",age:31,makeolder:"Alex32"}]),
+             templatename: function(person)
+             { 
+                 return person.age()>35 ? "persontemplate":"emptytemplate";
+             }
+         };
+           
+         viewModel.priceRate = ko.dependentObservable(function ()
+         { return this.price() > 50 ? "expensive" : "afforable" }, viewModel);
+         viewModel.Add=ko.computed(function(){
+
+         });
+         
+         viewModel.AddNewPerson=ko.dependentObservable(function(){
+            this.persons().push({name :"Cedar",age:33,makeolder:"Cedar34"})
+         },viewModel);
+        
+         ko.applyBindings(viewModel);
+
+         viewModel.myValues.push("value1");
+         viewModel.myValues.push("value2");
+
+         viewModel.shouldShowMessage(true);
+         //viewModel.shouldShowMessage(false); //will hide the div
+    </script>
+
+</body>
+</html>

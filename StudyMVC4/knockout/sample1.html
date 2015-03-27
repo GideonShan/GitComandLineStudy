@@ -1,0 +1,81 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+     <script type="text/javascript" src="../scripts/jquery-2.1.1.js"></script>
+    <script type="text/javascript" src="../scripts/jquery.tmpl.js"></script>
+    <script type="text/javascript" src="../scripts/knockout-3.2.0.js"></script>
+</head>
+<body>
+    <p>First name:<input  data-bind="value:firstName" /></p>
+    <p>Last name<input data-bind="value:lastName" /></p>
+    <h2>Hello,<span data-bind="text:fullName"></span>!</h2>
+    <br />
+
+    <div> You've clicked<span data-bind="text:numberOfClicks">&nbsp;</span>times</div>
+    <button data-bind="click: registerClick, enable: !hasClickTooManyTimes()">Click me</button>
+    <div data-bind="visible: hasClickTooManyTimes">
+That's too many clicks! please stop before you wear out your fingers.
+        <button data-bind="click:function(){ this.numberOfClicks(0)}">Reset clicks</button>
+    </div>
+    <div>
+        <img id="image1.png" contenteditable="false" src="image/image1.png" /></div>
+    <br />
+
+
+        New Item:
+        <input data-bind='value: itemToAdd, valueUpdate:"afterkeydown"' />
+        <button type="button" data-bind="click:addItem(), enable:itemToAdd().length>0">Add</button>
+        <p>Your items:</p>
+        <select multiple="multiple" width="50" data-bind="options:items"></select>
+<br />
+    Better List
+    <form data-bind="submit:addItem">
+        Add item: <input / type="text" data-bind='value:itemToAdd, valueUpdate:"afterkeydown"'/>
+        <button type="submit" data-bind="enable:itemToAdd().length>0">Add</button>
+    </form>
+    <p>Your values:</p>
+    <select multiple="multiple" height="5" data-bind="options: items, selectedOptions: selectedItems" ></select>
+
+    <div>
+        <button data-bind="click: removeSelected, enable: selectedItems().length > 0"> Remove </button>
+        <button data-bind="click: sortItems, enable: items.length>1"> Sort </button>
+    </div>
+    <script type="text/ecmascript">
+        var viewModel = {
+            firstName: ko.observable("planet"),
+            lastName: ko.observable("Earth")
+        };
+        viewModel.fullName = ko.dependentObservable(function () {
+            return viewModel.firstName() + " " + viewModel.lastName();
+        });
+        viewModel.numberOfClicks=ko.observable(0);
+        viewModel.registerClick=function(){
+            this.numberOfClicks(this.numberOfClicks()+1);
+        }
+        viewModel.hasClickTooManyTimes=ko.dependentObservable(function(){
+            return viewModel.numberOfClicks() >= 3;
+        }, this);
+
+        viewModel.items = ko.observableArray(["Alpha", "Beta", "Gamma"]);
+        viewModel.itemToAdd = ko.observable("");
+        viewModel.selectedItems = new ko.observableArray(["Gamma"]);
+        viewModel.addItem = function () {
+            if ((viewModel.itemToAdd() != "") && (viewModel.items.indexOf(viewModel.itemToAdd())<0)){
+                viewModel.items.push(viewModel.itemToAdd());
+                viewModel.itemToAdd("");
+            }
+        }
+        viewModel.removeSelected = function () {
+            viewModel.items.removeAll(viewModel.selectedItems());
+            viewModel.selectedItems([]);
+        }
+
+        viewModel.sortItems = function (){
+           viewModel.items.sort();
+        }
+
+        ko.applyBindings(viewModel);
+    </script>
+</body>
+</html>
